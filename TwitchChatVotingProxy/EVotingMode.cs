@@ -4,6 +4,7 @@
     {
         MAJORITY,
         PERCENTAGE,
+        EXPONENTIAL,
         ANTIMAJORITY
     }
 
@@ -15,6 +16,7 @@
         {
             { EVotingMode.MAJORITY, "MAJORITY" },
             { EVotingMode.PERCENTAGE, "PERCENTAGE" },
+            { EVotingMode.EXPONENTIAL, "EXPONENTIAL" },
             { EVotingMode.ANTIMAJORITY, "ANTIMAJORITY" },
         };
 
