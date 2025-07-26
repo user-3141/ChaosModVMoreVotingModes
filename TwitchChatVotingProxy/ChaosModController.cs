@@ -106,6 +106,37 @@ namespace TwitchChatVotingProxy
             return selectedOption;
         }
         /// <summary>
+        /// Calculate the voting result by assigning them a percentage based on exponentiated(squared) votes,
+        /// and choosing a random option based on that percentage.
+        /// </summary>
+        private int GetVoteResultByExponential()
+        {
+            // Get total exponentiated(squared) votes
+            var votes = m_ActiveVoteOptions.Select(_ => m_Config.RetainInitialVotes ? ((_.Votes + 1)*(_.Votes + 1)) : (_.Votes*_.Votes)).ToList();
+            var totalVotes = 0;
+            votes.ForEach(_ => totalVotes += _);
+            // If we have no votes, choose one at random
+            if (totalVotes == 0)
+                return m_Random.Next(0, votes.Count);
+            // Select a random vote from all votes
+            var selectedVote = m_Random.Next(1, totalVotes + 1);
+            // Now find out in what vote range/option that vote is
+            var voteRange = 0;
+            var selectedOption = 0;
+            for (var i = 0; i < votes.Count; i++)
+            {
+                voteRange += votes[i];
+                if (selectedVote <= voteRange)
+                {
+                    selectedOption = i;
+                    break;
+                }
+            }
+
+            // Return the selected vote range/option
+            return selectedOption;
+        }
+        /// <summary>
         /// Calculate the voting result by the option with the lowest votes
         /// </summary>
         private int GetVoteResultByAntiMajority()
@@ -157,6 +188,9 @@ namespace TwitchChatVotingProxy
                 break;
             case EVotingMode.PERCENTAGE:
                 e.ChosenOption = GetVoteResultByPercentage();
+                break;
+            case EVotingMode.EXPONENTIAL:
+                e.ChosenOption = GetVoteResultByExponential();
                 break;
             case EVotingMode.ANTIMAJORITY:
                 e.ChosenOption = GetVoteResultByAntiMajority();
