@@ -14,6 +14,7 @@ namespace ConfigApp.Tabs.Voting
         private TextBox? m_PermittedUserNames = null;
         private TextBox? m_VoteablePrefix = null;
         private CheckBox? m_EnableProportionalVoting = null;
+        private CheckBox? m_EnableProportionalVotingExponential = null;
         private CheckBox? m_EnableProportionalVotingRetainInitialChance = null;
 
         private static void SetupSettingsGrid(ChaosGrid grid)
@@ -119,6 +120,7 @@ namespace ConfigApp.Tabs.Voting
 
             footerGrid.SetRowHeight(new GridLength(20f));
             footerGrid.PushRowSpacedPair("Enable proportional voting mode", m_EnableProportionalVoting = Utils.GenerateCommonCheckBox());
+            footerGrid.PushRowSpacedPair("Exponential chance for popular options", m_EnableProportionalVotingExponential = Utils.GenerateCommonCheckBox());
             footerGrid.PushRowSpacedPair("Include initial chance in evaluation", m_EnableProportionalVotingRetainInitialChance = Utils.GenerateCommonCheckBox());
 
             m_Grids.Add(footerGrid.Grid);
@@ -147,6 +149,8 @@ namespace ConfigApp.Tabs.Voting
                 m_VoteablePrefix.Text = OptionsManager.VotingFile.ReadValue("VoteablePrefix", "");
             if (m_EnableProportionalVoting is not null)
                 m_EnableProportionalVoting.IsChecked = OptionsManager.VotingFile.ReadValue("VotingChanceSystem", false, "TwitchVotingChanceSystem");
+            if (m_EnableProportionalVotingExponential is not null)
+                m_EnableProportionalVotingExponential.IsChecked = OptionsManager.VotingFile.ReadValue("VotingChanceSystemExponential", false, "TwitchVotingChanceSystemExponential");
             if (m_EnableProportionalVotingRetainInitialChance is not null)
                 m_EnableProportionalVotingRetainInitialChance.IsChecked = OptionsManager.VotingFile.ReadValue("VotingChanceSystemRetainChance", true,
                     "TwitchVotingChanceSystemRetainChance");
@@ -161,6 +165,7 @@ namespace ConfigApp.Tabs.Voting
             OptionsManager.VotingFile.WriteValue("PermittedUsernames", m_PermittedUserNames?.Text);
             OptionsManager.VotingFile.WriteValue("VoteablePrefix", m_VoteablePrefix?.Text);
             OptionsManager.VotingFile.WriteValue("VotingChanceSystem", m_EnableProportionalVoting?.IsChecked);
+            OptionsManager.VotingFile.WriteValue("VotingChanceSystemExponential", m_EnableProportionalVotingExponential?.IsChecked);
             OptionsManager.VotingFile.WriteValue("VotingChanceSystemRetainChance", m_EnableProportionalVotingRetainInitialChance?.IsChecked);
         }
     }
